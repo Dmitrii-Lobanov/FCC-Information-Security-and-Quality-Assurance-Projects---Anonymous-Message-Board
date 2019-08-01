@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Project Details</title>
+  <meta name="description" content="A project for freeCodeCamp's Information Security and Quality Assurance certification">
+  <link id="favicon" rel="icon" type="image/x-icon" href="https://cdn.glitch.com/054d6fec-0cd3-4178-adb4-a9494acddb2f%2Ffavicon.jpg?1556542126282">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/public/style.css">
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto">
+  
+  <!-- We'll be using jQuery to handle our form submissions, dynamic content updates, and our nav menu behaviours, so let's make sure it's available to our page (in
+  HTTPS because our whole site is HTTPS). We can get the SRI Hash from https://www.srihash.org to help ensure that the third-party hosted resource hasn't been tampered with. -->
+    <script src="https://code.jquery.com/jquery-3.4.0.min.js"
+    integrity="sha384-JUMjoW8OzDJw4oFpWIB2Bu/c6768ObEthBMVSiIx4ruBIEdyNSUQAjJNFqT5pnJ6"
+    crossorigin="anonymous">
+  </script>
+  
+</head>
+
+
+
+<body>
+  
+  <div class="bezel">
+    
+    <div class="container">
+      
+      <div class="nav">
+        
+        <div class="statusBar">
+          <img src="https://cdn.glitch.com/054d6fec-0cd3-4178-adb4-a9494acddb2f%2Ficons8-wi-fi-filled-50.png?1558017937306" alt="WiFi signal symbol">
+          <img src="https://cdn.glitch.com/054d6fec-0cd3-4178-adb4-a9494acddb2f%2Ficons8-signal-filled-50.png?1558018005620" alt="Phone signal strength symbol">
+          <span>27%</span>
+          <img src="https://cdn.glitch.com/054d6fec-0cd3-4178-adb4-a9494acddb2f%2Ficons8-battery-level-filled-50.png?1558017813618" alt="battery symbol">
+          <span id="clock"></span>
+        </div>
+        
+        <div class="top-nav">
+          <h1>Project Details</h1>
+          
+          <div id="burger">
+            <span class="burger-line"></span>
+            <span class="burger-line"></span>
+            <span class="burger-line"></span>
+          </div>
+          
+        </div>
+        
+        <ul id="menu">
+          <a class="menu-item" href="/"><li>Home</li></a>
+          <a class="menu-item" href="/user-stories"><li>User Stories</li></a>
+          <a class="menu-item" href="/api-testing-forms"><li>API-Testing Forms</li></a>
+          <a class="menu-item" href="/project-details"><li>Project Details</li></a>
+        </ul>
+
+      </div>
+      
+      
+      <h3>Intro</h3>
+      <p>
+        This
+        <a href="https://learn.freecodecamp.org/information-security-and-quality-assurance/information-security-and-quality-assurance-projects/anonymous-message-board/" 
+        target="_blank" title="Visit the project page">anonymous message board</a>
+        is my take on the final project of the
+        <a href="https://www.freecodecamp.org/" title="Visit freeCodeCamp's website" target="_blank">freeCodeCamp</a>
+        courses.
+      </p>
+      <p>
+        Feel free to explore the app and its API, adding/deleting/reporting threads and replies to as many boards as you please.
+      </p>
+      
+      <h3>Above and Beyond</h3>
+      <p>      
+        As this is the last project in freeCodeCamp's <a href="https://learn.freecodecamp.org/" 
+                                                                                      title="Visit freeCodeCamp's curriculum" 
+                                                                                      target="_blank">curriculum</a>
+        , I've chosen to enjoy myself and take the project a few steps beyond the basic
+        <a href="/user-stories" title="See the project's user stories">user story requirements</a>.
+      </p>
+      <p>
+        Here are the key additional features I've worked on:
+        <ul>
+          <li>
+            I've designed the project to be more mobile-friendly, making this my first <i><b>design for mobile first</b></i> project. Ideally, I'd like to make the aesthetic of
+            the project visually "lighter", but I'm already well beyond the project requirements and, for now at least, it's time to ship this puppy.
+            <br>
+            <br>
+            The app/site is fully responsive and will resize itself to match your screen size. Feel free to visit this project on your mobile device, where you should see
+            that the mock phone bezel (visible on a computer) has disappeared.
+            <br>
+            <br>
+            Alternatively, if you're on a computer, you can use your browser's developer tools to switch to "device view" (in Firefox and Chrome, press <code>F12</code> on 
+            your keyboard, then click on the little icon that looks like a phone and a tablet together in the top row of the developer panel). Depending on your browser, 
+            you might have to refresh the page to see the design correctly, but you should see the phone bezel disappear when you switch to a device-mimicking view. The bezel 
+            itself is pure CSS.
+          </li>
+          <li>
+            I've written server-side form data validation for the key form fields. Even if the fields in all the forms are set to "required", a sneaky
+            user who turns off this setting in the developer tools should not be able to break the API by submitting faulty data or empty fields.
+          </li>
+          <li>
+            I've striven to incorporate web accessibility for this project from the start, adding titles and labels everywhere in an effort to be inclusive and provide all users
+            equal access to the information and functionality of the site/app.
+          </li>
+          <li>
+            I've chosen to make the alert messages prescribed by the user stories more informative and thorough in order to improve the user experience.
+          </li>
+          <li>
+            I've added a home page that dynamically lists all the existing message boards and provides links to each one.
+          </li>
+          <li>
+            That silly little clock in the status bar tells time. It was a fun little bit of code to bang out over a cup of tea at breakfast. ^_^
+          </li>
+          <li>
+            I've written Chai assertion tests (with iteration loops, I have 134 test, all passing) in order to thoroughly test the project's functionality.
+          </li>
+          <li>
+            I've also checked the spelling on the different pages.
+          </li>
+        </ul>
+      </p>
+      
+      <h3>Code & Tech Stack</h3>
+      <p>
+        What you see here was designed and coded by me (<a href="http://www.joolian.com" target="_blank">Julian NF</a>). If you have a look at 
+        <a href="https://glitch.com/edit/#!/chiseled-squid-1" target="_blank" title="See the code for this project">my code</a>
+        and see my "we" comments, don't be alarmed; it's how I like to comment in order to make my code more approachable and teachable.
+        <br>
+        <br>
+        I chose not to use any external scripts or code snippets (e.g. for menus, sliders, etc.), and in fact the technology stack that I used is limited to the following:
+        <ul id="techStack">
+          <li>
+            JavaScript
+          </li>
+          <li>
+            <a href="https://api.jquery.com/" title="Learn more about jQuery" target="_blank">jQuery</a> and AJAX
+          </li>
+          <li>
+            <a href="https://nodejs.org/" title="Learn more about Node.js" target="_blank">Node.js</a>
+          </li>
+          <li>
+            <a href="https://expressjs.com/" target="_blank" title="Learn more about Express.js">Express.js</a>
+          </li>
+          <li>
+            <a href="https://www.mongodb.com//" target="_blank" title="Learn more about MongoDB">MongoDB</a>
+          </li>
+          <li>
+            <a href="https://mochajs.org/" target="_blank" title="Learn more about Mocha.js">Mocha.js</a> and 
+            <a href="https://www.chaijs.com/" target="_blank" title="Learn more about Chai.js">Chai.js</a> for testing
+          </li>
+          <li>
+            <a href="https://helmetjs.github.io/" target="_blank" title="Learn more about Helmet.js">Helmet.js</a>
+          </li>
+          <li>
+            a little sprinkling :) of CSS.
+          </li>
+        </ul>
+        What remains of the original
+        <a href="https://github.com/freeCodeCamp/boilerplate-project-messageboard/" target="_blank" title="Project boilerplate on GitHub">project-specific boilerplate code</a>
+        for this project is comprised mostly of code that freeCodeCamp implements to test finished projects.
+      </p>
+      <p>
+        Those bits of the original boilerplate that remain and are not for testing, I've tidied up to simplify them and to ensure that this code is as close to best-practice 
+        as possible. For example:
+        <ul>
+          <li>
+            correcting single quotes where standards say there should be double quotes, such as in HTML tag attributes
+          </li>
+          <li>
+            refactoring code, expanding functionality, and combining similar code, such as with the form submission functions
+          </li>
+          <li>
+            ensuring that all elements on a page have unique ID attributes, particularly for dynamically added content
+          </li>
+          <li>
+            updating package versions for the project and removing any unused and unnecessary ones.
+          </li>
+        </ul>
+  I haven't written or updated the Mocha-launching <code>test-runner.js</code> file which came with the boilerplate.
+      </p>
+      
+    </div>  <!-- END of DIV class=container -->
+  </div>  <!-- END of DIV class=bezel -->
+  
+  
+  <script>
+    // We'll need our menu functions:
+    $(function() {
+      // Whenever the hamburger button is clicked, we want our menu to slide out:
+      $("#burger").on("click", function() {
+        $(".burger-line").toggleClass("open-burger");  // To make our burger orange when the menu is open/displayed
+        $("#menu").slideToggle("fast");
+      });
+      
+      // We'll also make the menu list slide up when a menu-item is clicked (and loads a new page) to make the transition between pages appear smoother:
+      $(".menu-item").on("click", function() {
+        $("#menu").slideUp("fast");
+        $(".burger-line").removeClass("open-burger");  // To make our burger white again when the menu is closed
+      });
+      
+      // We'll also want our menu to hide (if it's showing) when we click outside of it:
+      $("body").not("#menu").on("click", function(e) {
+        // We want this action to NOT (!) be affected by clicks on the hamburger or its hamburger-lines:
+        if ( !$("#burger").is(e.target) && !$(".burger-line").is(e.target) ) {
+          $("#menu").slideUp("fast");
+          $(".burger-line").removeClass("open-burger");  // To make our burger white again when the menu is closed
+        };
+      });
+      
+      
+      
+      // We'll write a little clock function to keep the clock in our phone mockup's statusBar up to date:
+      function clockUpdater() {
+        // We'll get the current time...
+        let currentTime = new Date()
+        // ... from which we'll extract the hours and minutes, making sure to have a leading 0 if either is less than 10 "units"...
+        let hours = currentTime.getHours();
+        if (hours < 10) hours = "0" + hours;
+        let minutes = currentTime.getMinutes();
+        if (minutes < 10) minutes = "0" + minutes;
+        // ... and with the hours and minutes in hand, the function will update the #clock element on the page:
+        $("#clock").text( hours + "h" + minutes );
+      };  // END of clockUpdater()
+      
+      
+      // We'll run the clock updater once on page load (i.e. when the browser gets down to this line of code) to make sure that the clock is loaded ASAP...
+      clockUpdater();
+      
+      // ... and then we'll have the clock updater function run once every minute to keep the clock updated:
+      setInterval( function() {
+        clockUpdater();
+      }, 60000 );
+      
+      
+      
+    });  // END of main script function
+  </script>  
+
+  
+</body>
+
+</html>

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>API Testing Forms </title>
+  <meta name="description" content="A project for freeCodeCamp's Information Security and Quality Assurance certification">
+  <link id="favicon" rel="icon" type="image/x-icon" href="https://cdn.glitch.com/054d6fec-0cd3-4178-adb4-a9494acddb2f%2Ffavicon.jpg?1556542126282">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/public/style.css">
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto">
+  
+  <!-- We'll be using jQuery to handle our form submissions, dynamic content updates, and our nav menu behaviours, so let's make sure it's available to our page (in
+  HTTPS because our whole site is HTTPS). We can get the SRI Hash from https://www.srihash.org to help ensure that the third-party hosted resource hasn't been tampered with. -->
+    <script src="https://code.jquery.com/jquery-3.4.0.min.js"
+    integrity="sha384-JUMjoW8OzDJw4oFpWIB2Bu/c6768ObEthBMVSiIx4ruBIEdyNSUQAjJNFqT5pnJ6"
+    crossorigin="anonymous">
+  </script>
+  
+</head>
+
+
+
+<body>
+  
+  <div class="bezel">
+    
+    <div class="container">
+      
+      <div class="nav">
+        
+        <div class="statusBar">
+          <img src="https://cdn.glitch.com/054d6fec-0cd3-4178-adb4-a9494acddb2f%2Ficons8-wi-fi-filled-50.png?1558017937306" alt="WiFi signal symbol">
+          <img src="https://cdn.glitch.com/054d6fec-0cd3-4178-adb4-a9494acddb2f%2Ficons8-signal-filled-50.png?1558018005620" alt="Phone signal strength symbol">
+          <span>27%</span>
+          <img src="https://cdn.glitch.com/054d6fec-0cd3-4178-adb4-a9494acddb2f%2Ficons8-battery-level-filled-50.png?1558017813618" alt="battery symbol">
+          <span id="clock"></span>
+        </div>
+        
+        <div class="top-nav">
+          <h1>API-Testing Forms</h1>
+          
+          <div id="burger">
+            <span class="burger-line"></span>
+            <span class="burger-line"></span>
+            <span class="burger-line"></span>
+          </div>
+          
+        </div>
+        
+        <ul id="menu">
+          <a class="menu-item" href="/"><li>Home</li></a>
+          <a class="menu-item" href="/user-stories"><li>User Stories</li></a>
+          <a class="menu-item" href="/api-testing-forms"><li>API-Testing Forms</li></a>
+          <a class="menu-item" href="/project-details"><li>Project Details</li></a>
+        </ul>
+
+      </div>
+      
+      
+      
+      <div id="forms">
+        
+        <p>
+          Here you can test all of the API's functionality for both threads and replies. Note that these forms work and are live.
+        </p>
+        
+        <h3>Thread-Related Operations:</h3>
+        
+        <form class="threads" method="POST">
+          <h4>Create a New Thread</h4>
+          <input type="text" placeholder="Name of message board to add thread to" id="board1" name="board" required><br>
+          <textarea type="text" placeholder="Thread text..." name="text" required></textarea><br>
+          <input type="text" placeholder="Password for deleting this thread later on" name="delete_password" required><br>
+          <input type="submit" value="Create New Thread">
+          <code>POST /api/threads/:board</code>
+        </form>
+        
+        
+        <form class="threads" method="PUT">
+          <h4>Report an Existing Thread</h4>
+          <input type="text" placeholder="Name of message board containing the thread" id="board2" name="board" required><br>
+          <input type="text" placeholder="ID of thread to be reported" name="thread_id" required><br>
+          <input type="submit" value="Report Thread">
+          <code>PUT /api/threads/:board</code>
+        </form>
+        
+        
+        <form class="threads" method="DELETE">
+          <h4>Delete an Existing Thread</h4>
+          <input type="text" placeholder="Name of message board containing the thread" id="board3" name="board" required><br>
+          <input type="text" placeholder="ID of thread to delete" name="thread_id" required><br>
+          <input type="text" placeholder="Password for deleting this thread" name="delete_password" required><br>
+          <input type="submit" value="Delete Thread">
+          <code>DELETE /api/threads/:board</code>
+        </form>
+
+        
+        
+        
+        <h3>Reply-Related Operations:</h3>
+        
+        <form class="replies" method="POST">
+          <h4>New Reply to an Existing Thread</h4>
+          <input type="text" placeholder="Name of message board containing the thread" id="board4" name="board" required><br>
+          <input type="text" placeholder="ID of the thread to reply to" name="thread_id" required><br>
+          <textarea type="text" placeholder="Reply text..." name="text" required></textarea><br>
+          <input type="text" placeholder="Password to use later on to delete this reply" name="delete_password" required><br>
+          <input type="submit" value="Submit Reply">
+          <code>POST /api/replies/:board</code>
+        </form>
+        
+        
+        
+        <form class="replies" method="PUT">
+          <h4>Report an Existing Reply</h4>
+          <input type="text" placeholder="Name of message board containing the thread" id="board5" name="board" required><br>
+          <input type="text" placeholder="ID of thread where the reply is located" name="thread_id" required><br>
+          <input type="text" placeholder="ID of reply to be reported" name="reply_id" required><br>
+          <input type="submit" value="Report Reply">
+          <code>PUT /api/replies/:board</code>
+        </form>
+        
+        
+        
+        <form class="replies" method="DELETE">
+          <h4>Delete an Existing Reply</h4>
+          <input type="text" placeholder="Name of message board containing the thread" id="board6" name="board" required><br>
+          <input type="text" placeholder="ID of thread where the reply is located" name="thread_id" required><br>
+          <input type="text" placeholder="ID of reply to be deleted" name="reply_id" required><br>
+          <input type="text" placeholder="Password for deleting this reply" name="delete_password" required><br>
+          <input type="submit" value="Delete Reply">
+          <code>DELETE /api/replies/:board</code>
+        </form>
+        
+      </div>  <!-- END of DIV forms -->
+
+    </div>  <!-- END of DIV class=container -->
+    
+  </div>  <!-- END of DIV class=bezel -->
+  
+  
+  
+  <script>
+    // To ensure that our function below loads when our page is ready we load our script at the end of the page's source and let the function fire up as soon as the browser 
+    // has made it down here.
+    
+    $(function() {
+      
+      // Before writing our form-submission actions, let's write a script to handle our menu clicks:
+      // Whenever the hamburger button is clicked, we want our menu to slide out:
+      $("#burger").on("click", function() {
+        $(".burger-line").toggleClass("open-burger");  // To make our burger orange when the menu is open/displayed
+        $("#menu").slideToggle("fast");
+      });
+      
+      // We'll also make the menu list slide up when a menu-item is clicked (and loads a new page) to make the transition between pages appear smoother:
+      $(".menu-item").on("click", function() {
+        $("#menu").slideUp("fast");
+        $(".burger-line").removeClass("open-burger");  // To make our burger white again when the menu is closed
+      });
+      
+      // We'll also want our menu to hide (if it's showing) when we click outside of it:
+      $("body").not("#menu").on("click", function(e) {
+        // We want this action to NOT (!) be affected by clicks on the hamburger or its hamburger-lines:
+        if ( !$("#burger").is(e.target) && !$(".burger-line").is(e.target) ) {
+          $("#menu").slideUp("fast");
+          $(".burger-line").removeClass("open-burger");  // To make our burger white again when the menu is closed
+        };
+      });  // END of menu functions
+      
+      
+      
+      
+      
+      // We'll write a little clock function to keep the clock in our phone mockup's statusBar up to date:
+      function clockUpdater() {
+        // We'll get the current time...
+        let currentTime = new Date()
+        // ... from which we'll extract the hours and minutes, making sure to have a leading 0 if either is less than 10 "units"...
+        let hours = currentTime.getHours();
+        if (hours < 10) hours = "0" + hours;
+        let minutes = currentTime.getMinutes();
+        if (minutes < 10) minutes = "0" + minutes;
+        // ... and with the hours and minutes in hand, the function will update the #clock element on the page:
+        $("#clock").text( hours + "h" + minutes );
+      };  // END of clockUpdater()
+      
+      // We'll run the clock updater once on page load (i.e. when the browser gets down to this line of code) to make sure that the clock is loaded ASAP...
+      clockUpdater();
+      
+      // ... and then we'll have the clock updater function run once every minute to keep the clock updated:
+      setInterval( function() {
+        clockUpdater();
+      }, 60000 );
+      
+      
+      
+      // We'll now turn our attention to handling the submission of all the various forms. Rather than using the default form submission behaviour, or having
+      // one more robust function per form, we'll combine all 6 functions into 1 function. This will save tremendously on code and repetition:
+      
+      $("form").submit(function(e) {
+        // We'll start by preventing the default form submission behaviour...
+        e.preventDefault();
+        // ... we'll save our key information to a few variables in order to keep things tidy...
+        let method = $(this).attr("method");
+        let className = $(this).attr("class");
+        let boardName = encodeURIComponent( $(this[name="board"]).val() );
+        let threadId = $(this[name="thread_id"]).val();    // We'll only be needing this variable when POSTing a new reply, but let's save it here for tidyness' sake
+        
+        // ... then, with all of our variables in hand, we'll make our ajax HTTP request:
+        $.ajax({
+          type: method,
+          url: "/api/" + className + "/" + boardName,
+          data: $(this).serialize(),
+          success: (data) => {
+            // We'll check for any server-side data validation errors...
+            if ( data.hasOwnProperty("Error") ) {
+              return alert(data.Error);
+            };
+            
+            // If there are no server-side validation errors, we'll carry out our next actions depending on which form was submitted:
+            if ( method == "POST" && className == "threads" ) {
+              // ... we'll redirect the user to the thread's board's page:
+              window.location = "/chiclet/" + boardName;
+            }
+            else if ( method == "POST" && className == "replies" ) {
+              // ... we'll redirect the user to the thread's page:
+              window.location = "/chiclet/" + boardName + "/" + threadId ;
+            }
+            else {
+              // ... and finally, if we're deleting or reporting a thread or a reply, all we need to do is send a confirmation messsage to the user...
+              alert(data);
+              // ... and rather than reload the whole page, we'll reset the form to its default state:
+              $(this)[0].reset();
+            };
+            
+          }  // END of success callback function
+        });  // END of AJAX request
+      });  // END of form submission listener
+      
+      
+      
+    });  // END of the main function within <script>
+  </script>
+  
+</body>
+
+</html>
