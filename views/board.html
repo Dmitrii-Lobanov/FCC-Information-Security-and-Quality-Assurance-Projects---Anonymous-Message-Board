@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Anonymous Message Board for freeCodeCamp</title>
+  <meta name="description" content="A project for freeCodeCamp's Information Security and Quality Assurance certification">
+  <link id="favicon" rel="icon" type="image/x-icon" href="https://cdn.glitch.com/054d6fec-0cd3-4178-adb4-a9494acddb2f%2Ffavicon.jpg?1556542126282">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/public/style.css">
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto">
+  
+  <!-- We'll be using jQuery to handle our form submissions, dynamic content updates, and our nav menu behaviours, so let's make sure it's available to our page (in
+  HTTPS because our whole site is HTTPS). We can get the SRI Hash from https://www.srihash.org to help ensure that the third-party hosted resource hasn't been tampered with. -->
+    <script src="https://code.jquery.com/jquery-3.4.0.min.js"
+    integrity="sha384-JUMjoW8OzDJw4oFpWIB2Bu/c6768ObEthBMVSiIx4ruBIEdyNSUQAjJNFqT5pnJ6"
+    crossorigin="anonymous">
+  </script>
+  
+</head>
+
+
+<body>
+  
+  <div class="bezel">
+    
+    <div class="container">
+
+      <div class="nav">
+        
+        <div class="statusBar">
+          <img src="https://cdn.glitch.com/054d6fec-0cd3-4178-adb4-a9494acddb2f%2Ficons8-wi-fi-filled-50.png?1558017937306" alt="WiFi signal symbol">
+          <img src="https://cdn.glitch.com/054d6fec-0cd3-4178-adb4-a9494acddb2f%2Ficons8-signal-filled-50.png?1558018005620" alt="Phone signal strength symbol">
+          <span>27%</span>
+          <img src="https://cdn.glitch.com/054d6fec-0cd3-4178-adb4-a9494acddb2f%2Ficons8-battery-level-filled-50.png?1558017813618" alt="battery symbol">
+          <span id="clock"></span>
+        </div>
+        
+        <div class="top-nav">
+          
+          <div>
+            <div id="backALevel"><a href="/" title="Return to home page">&#10140;</a></div>
+            <h1 id="boardTitle"></h1>
+          </div>
+          
+          <div id="burger">
+            <span class="burger-line"></span>
+            <span class="burger-line"></span>
+            <span class="burger-line"></span>
+          </div>
+        </div>
+
+        <ul id="menu">
+          <a class="menu-item" href="/"><li>Home</li></a>
+          <a class="menu-item" href="/user-stories"><li>User Stories</li></a>
+          <a class="menu-item" href="/api-testing-forms"><li>API-Testing Forms</li></a>
+          <a class="menu-item" href="/project-details"><li>Project Details</li></a>
+        </ul>
+
+      </div> <!-- END of .nav -->
+      
+      <form id="newThread">
+        <h4>Submit a New Thread to this Board</h4>
+        <textarea type="text" placeholder="Thread text..." name="text" required></textarea><br>
+        <input type="text" placeholder="Password for deleting this thread later" name="delete_password" required><br>
+        <input type="submit" value="Create New Thread">
+      </form>    
+
+      <!-- This is where all of threads and their replies will be dynamically added: -->
+      <div id="boardDisplay"></div>
+
+    </div>  <!-- END of DIV "container" -->
+    
+  </div>  <!-- END of DIV class=bezel -->
+  
+  
+  
+  <script>
+    // By having the script here, at the end of the page's elements, the main function will only fire once the page's elements are loaded:
+    $(function() {
+      
+      // We'll start by defining our menu functions:
+      // Whenever the hamburger button is clicked, we want our menu to slide out:
+      $("#burger").on("click", function() {
+        $(".burger-line").toggleClass("open-burger");  // To make our burger orange when the menu is open/displayed
+        $("#menu").slideToggle("fast");
+      });
+      
+      // We'll also make the menu list slide up when a menu-item is clicked (and loads a new page) to make the transition between pages appear smoother:
+      $(".menu-item").on("click", function() {
+        $("#menu").slideUp("fast");
+        $(".burger-line").removeClass("open-burger");  // To make our burger white again when the menu is closed
+      });
+      
+      // We'll also want our menu to hide (if it's showing) when we click outside of it:
+      $("body").not("#menu").on("click", function(e) {
+        // We want this action to NOT (!) be affected by clicks on the hamburger or its hamburger-lines:
+        if ( !$("#burger").is(e.target) && !$(".burger-line").is(e.target) ) {
+          $("#menu").slideUp("fast");
+          $(".burger-line").removeClass("open-burger");  // To make our burger white again when the menu is closed
+        };
+      });  // END of menu functions
+      
+      
+      
+      
+      
+      // We'll write a little clock function to keep the clock in our phone mockup's statusBar up to date:
+      function clockUpdater() {
+        // We'll get the current time...
+        let currentTime = new Date()
+        // ... from which we'll extract the hours and minutes, making sure to have a leading 0 if either is less than 10 "units"...
+        let hours = currentTime.getHours();
+        if (hours < 10) hours = "0" + hours;
+        let minutes = currentTime.getMinutes();
+        if (minutes < 10) minutes = "0" + minutes;
+        // ... and with the hours and minutes in hand, the function will update the #clock element on the page:
+        $("#clock").text( hours + "h" + minutes );
+      };  // END of clockUpdater()
+      
+      // We'll run the clock updater once on page load (i.e. when the browser gets down to this line of code) to make sure that the clock is loaded ASAP...
+      clockUpdater();
+      
+      // ... and then we'll have the clock updater function run once every minute to keep the clock updated:
+      setInterval( function() {
+        clockUpdater();
+      }, 60000 );
+      
+      
+      
+      
+      
+      // With our menu and clock functions sorted, let's move on to dynamically populating the different elements of our page:
+      // Let's figure out where we are (i.e. which message board our board page template is supposed to be displaying for) based on the URL of the page:
+      let currentBoard = decodeURIComponent( window.location.pathname.slice(9) );  // .slice(9) to remove "/chiclet/" from the URI pathname string
+      
+      // With the board name in hand, Let's update the page's Title header dynamically...
+      $("title").text('Messaging Board: "' + currentBoard + '" - Anonymous Message Board for freeCodeCamp - by JulianNF');
+      // ... and also take a second to update the H1 for the page with the board name:
+      $("#boardTitle").text("Board: " + currentBoard);      
+      
+      
+      // With the board name, we can also put together the URL for making GET requests to our database in order to retrieve all the threads that belong to this board with AJAX:
+      $.ajax({
+        type: "GET",
+        url: "/api/threads/" + encodeURIComponent(currentBoard),
+        success: function(data) {
+          // For each thread in our board, we'll be pushing various DIVs and elements into an array. Later, we'll join all the elements in this array into one long string and
+          // update our DOM with it. To do this, let's start by defining the array to which we'll add all these DIVs and elements:
+          let boardThreads= [];
+          
+          // We'll iterate through each thread object in our returned data array and create a DIV for each one. Each of these DIVs will contain all of the thread's elements:
+          data.forEach(function(ele) {
+            // Let's start by defining our current thread's array and "begin" it with an opening DIV tag...
+            let thread = ['<div class="thread">'];
+            // ... to which we'll add a DIV for the initial post...
+            thread.push('<div class="initial-thread">')
+            // ... and add the text for the initial thread...
+            thread.push('<p>' + ele.threadName + '</p>');
+            // ... we'll keep all of the meta-info for the thread post in a separate DIV...
+            thread.push('<div class="meta-info">');
+            // ... and we'll further subdivide this DIV into a left-right DIV for our text metadata and our report and delete buttons...
+            thread.push('<div class="meta-left-right">');
+            // ... and withing this new DIV we'll add the thread's ID as well as its creation date in one DIV...
+            thread.push('<div><p>Thread ID: ' + ele._id + '<br>Created: ' + ele.createdOn.replace(/T/, " at ").substring(0, 22) + ' UTC</p></div>');
+            // ... and on the right side we'll include our reporting and delete-menu-toggling buttons in another DIV...
+            thread.push('<div class="post-buttons">');
+                // Note that we pass the thread's ID to both the report button and the toggle-delete-menu button, as we'll be using these later on in our click listeners.
+            thread.push('<button class="report" id="reportthread' + ele._id + '" title="Report this thread">!</button>');
+            thread.push('<button class="deleteForm-toggle" id="toggledeletethread' + ele._id + '" title="Delete this thread">X</button>');
+            // ... then we'll close our buttons DIV as well as our meta-left-right DIV...
+            thread.push('</div></div>');
+            // ... after which we'll add in our thread-deleting form...
+                // Note how we have hidden, pre-filled fields in the form, which will ensure that our forms are simpler while still providing enough data for
+                // our AJAX form submission to work. We've also added the thread's ID into the form's ID attribute for our click listeners later on to work correctly.
+            thread.push('<form class="deleteForm" id="deletethread' + ele._id + '">' );
+            thread.push('<input type="hidden" value="' + ele._id + '" name="thread_id" required>');
+            thread.push('<input type="text" placeholder="Thread\'s password" name="delete_password" required>');
+            thread.push('<input type="submit" title="Delete this thread" value="Delete Thread">');
+            thread.push('</form>');
+            // ... and then we'll close our meta-info DIV and the initial-thread DIV...
+            thread.push('</div></div>');
+            
+            // ... and open the replies DIV where we'll be iterating in all the replies for the current thread. Note that there'll be a max of 3 replies as the user stories 
+            // state that's how many we should be returning for this page...
+            thread.push('<div class="replies">');
+            
+            // ... for each reply in the thread's replies array (our MongoDB query in our route handler will have limited the number to 3 replies) ...
+            ele.replies.forEach(function(rep) {
+              // ... we'll create a new reply DIV...
+              thread.push('<div class="reply">')
+              // ... add in the reply's text ...
+              thread.push('<p>' + rep.reply + '</p>');
+              // ... like with our thread, we'll keep the reply's meta data in a separate DIV...
+              thread.push('<div class="meta-info">');
+              // .. within which we'll have a sub-DIV for the left and right sides of our metadata...
+              thread.push('<div class="meta-left-right">');
+              // ... on the left of this sub-DIV we'll have a DIV for the text elements (i.e. the reply's ID as a title, as well as the date it was created on)...
+              thread.push('<div><p>Reply ID: ' + rep._id + '<br>Created: ' + rep.createdOn.replace(/T/, " at ").substring(0, 22) + ' UTC</p></div>');
+              // ... and on the right side we'll have the "report" and the deleteForm-toggle buttons in another DIV. Note that we have the buttons "carry" their reply IDs (in
+              // their ID attributes) and their thread IDs (in their name attributes). This will help us with our click listeners and AJAX form submissions later on...
+              thread.push('<div class="post-buttons">');              
+              thread.push('<button class="report" id="reportreply' + rep._id + '" name="reportinthread' + ele._id + '" title="Report this reply">!</button>');
+              thread.push('<button class="deleteForm-toggle" id="toggledeletereply' + rep._id + '" name="deleteinthread' + ele._id + '" title="Delete this reply">X</button>');
+              // ... we'll close our form and button DIV, as well as our left-and-right-side DIV...
+              thread.push('</div></div>');
+              // ...  and then add in our delete-form. As with the deleteForm for the threads, note the hidden input fields and that the form's ID attribute holds the reply's
+              // ID. Both of these details will help us tremendously in toggling the deleteForm as well as with submitting the delete request via AJAX...
+              thread.push('<form class="deleteForm" id="deletereply' + rep._id + '">');
+              thread.push('<input type="hidden" value="' + ele._id + '" name="thread_id" required>');
+              thread.push('<input type="hidden" value="' + rep._id + '" name="reply_id" required>');
+              thread.push('<input type="text" placeholder="Reply\'s password" name="delete_password" required>');
+              thread.push('<input type="submit" title="Delete this reply" value="Delete Reply">');
+              thread.push('</form>');
+              // ... we'll then close the meta-info DIV and the reply DIV for the current reply...
+              thread.push('</div></div>');              
+            });
+            
+            
+            
+            // ... with the thread and reply posts DIVs added to our array, we'll now go ahead and add a link to the full-length thread (as "board" pages are limited to 3
+            // replies per thread according to the user stories). We'll wrap the link around a DIV so that the whole thing is clickable and so that we can style it similarly 
+            // to both the replies above it and to the #newReply form that will come after it. We'll want the text in this link to reflect whether or not there are additional
+            // (hidden) replies to the given thread. We'll determine how many more replies there are by making use of the thread's replyCount property, which we've set to
+            // increment by 1 in our database each time a reply is added to a thread...
+            let additionalReplies = ele.replyCount - 3;
+            // ... we'll also define a placeholder string for the message we'll want to show the user (it will remain an empty string if there are <=3 replies)...
+            let countMessage = "";            
+            // ... if the additionalReplies count is greater than zero, then there are "hidden" replies. Let's update our countMessage variable accordingly:
+            if ( additionalReplies == 1 ) {
+              countMessage = "(1 more reply)";
+            }
+            else if ( additionalReplies > 1 ) {
+              countMessage = "(" + additionalReplies + " more replies)";
+            };
+            // ... we'll now add the link (with the countMessage) and the DIV to our array of elements...
+            thread.push('<a href="' + window.location.pathname + '/' + ele._id + '" class="fullthreadlink">');
+            thread.push('<div class="fullthreaddiv">See the full thread ' + countMessage + '</div>');
+            thread.push('</a>');
+            
+            
+            
+            // ... with all the replies' components added to our current thread, we can go ahead and add in the last element for the thread that we're currently iterating over,
+            // which is the form for adding a new reply to the given thread...
+            thread.push('<form id="newReply">');
+            thread.push('<input type="hidden" name="thread_id" value="' + ele._id + '">');
+            thread.push('<textarea type="text" placeholder="Reply to this thread..." name="text" required></textarea><br>');
+            thread.push('<input type="text" placeholder="Password for deleting this reply later" name="delete_password" required><input type="submit" value="Submit Reply">')
+            thread.push('</form>');
+            // ... and we'll then close the replies DIV as well as the thread DIV...
+            thread.push('</div></div>');
+            
+            // With everything added to the current thread's array of elements, we'll push it to our boardThreads array, joining all of the elements into one long string...
+            boardThreads.push(thread.join(""));
+          });  // ... (if there are any other threads for this board, the above steps would repeat for the next thread's content).
+
+          // Having finished iterating through all of the threads belonging to this page's messaging board, we can update our page with all the DIVs for the threads and
+          // their replies:
+          $("#boardDisplay").html(boardThreads.join(""));
+        }
+        
+      });  //  END of AJAX request for all of this messaging board's threads and replies, and dynamically adding them to the DOM.
+
+
+
+      // Now that the thread and reply content has been added to the page, let's turn our attention to what we want to happen when the different buttons (e.g. delete-menu-toggle,
+      // report) on the page are clicked. Each will trigger different actions:
+          // N.B. Because the buttons were added dynamically to the document, a simple $(":button").click() event listener won't find what element the click was on. Instead,
+          // we have to listen to the whole document or at least to the "#boardDisplay" DIV which is the closest "pre-loaded" parent for all of our buttons:
+      $("#boardDisplay").on("click", ":button", function(e) {
+        // Let's use an IF/ELSE statement to carry out different actions depending on which button was clicked:
+        
+        // If the button that was clicked is the "X" button, we'll want to toggle (hide/show) the deleteForm menu for that specific "X" button:
+        if ( $(this).hasClass("deleteForm-toggle") ) {          
+          // The ID of our "X" buttons will either be "toggledeletethread{ObjectId}" or "toggledeletereply{ObjectId}".
+          // Similarly, their matching deleteForms' ID will simply be "deletethread{ObjectId}" or "deletereply{ObjectId} ). As such, in order to figure out which deleteForm to
+          // show, we need to remove the string "toggle" from the clicked-button's ID attribute (using .replace() with an empty replacement value):
+          let deleteFormId = "#" + e.target.id.replace("toggle", "");          
+          // With the ID of the matching deleteForm in hand, we can now make sure that clicking the "X" button will hide/show the deleteForm for this reply/thread...
+          $(deleteFormId).slideToggle("fast");
+          // ... and similarly toggle the class "open" for the clicked "X" button so that it gets styled to show the menu is open/closed:
+          $(this).toggleClass("open");
+        }
+        
+        // If the button that was clicked was the "!" button:
+        else if ( $(this).hasClass("report") ) {
+          // We'll need to determine what kind of post the report "!" button was clicked for. Was it for a thread or for a reply? Because the ID attribute of our report
+          // buttons will be either "reportthread{ObjectId}" or "reportreply{ObjectId}", we can use .indexOf() to see whether the string "reply" or "thread" is present in
+          // the button's ID attribute.
+          // When we know, we'll need to put together the correct endpoint URL and also prepare the data that we need to send with our AJAX request so that our API routes
+          // have everything they need in order to succesfully query the database.
+          // Let's remember that the report buttons that we dynamically added to the DOM have their reply ID in their ID attribute, and their thread ID in their NAME attribute.
+          
+          // All right, let's start by defining empty variables for our URL endpoint and for the data that we'll need to send with our AJAX request:
+          let url;
+          let data;
+          
+          if ( e.target.id.indexOf("reply") >= 0 ) {
+            // The ID of the clicked "!" button has the string "reply" in it, which means that it must be to report a reply, for which the endpoint URL is...
+            url = "/api/replies/" + encodeURIComponent(currentBoard);
+            // ... and the data that we need to send is:
+            data = {
+              reply_id: e.target.id.substring(11),
+              thread_id: e.target.name.substring(14)
+            }
+          }
+          else if ( e.target.id.indexOf("thread") >= 0 ) {
+            // The ID of the clicked "!" button has the string "thread" in it, which means that it must be to report a thread, for which the endpoint URL is...
+            url = "/api/threads/" + encodeURIComponent(currentBoard);
+            // ... and the data that we need to send is:
+            data = {
+              thread_id: e.target.id.substring(12)
+            }
+          };
+          
+          // With our correct URL endpoint and data in hand, we can now go ahead and submit our AJAX PUT action, and upon success, alert the user with a confirmation message:
+          $.ajax({
+            type: "PUT",
+            url: url,
+            data: data,
+            success: (data) => {              
+              // We'll check for any server-side data validation errors:
+              if ( data.hasOwnProperty("Error") ) {
+                return alert(data.Error);
+              };
+              
+              // If there are no server-side data validation errors, then we'll simply return the data, which should be a confirmation message for the user:
+              alert(data)
+            }
+          });
+        }
+        
+        // And just in case, for debugging purposes, we'll send alerts for any unexpected button clicks that we haven't accounted for:
+        else {
+          console.log("It appears that a button not related to reporting (!) or deleting (X) was clicked. Strange!");
+        };
+        
+      });  // END of :button click event listener
+
+
+
+
+      // With our menu, dynamic-content-adding, and click-listener functions done, let's turn our attention to the submission of the forms on the page.
+      // We'll start with the form for submitting a new thread to the current page's messaging board:
+      $("#newThread").submit(function(e){
+        // We'll first prevent the default form submissions functionality...
+        e.preventDefault();
+        // ... then make our AJAX POST request to the correct URL endpoint...
+        $.ajax({
+          type: "POST",
+          url: "/api/threads/" + encodeURIComponent(currentBoard),
+          data: $(this).serialize(),
+          success: (data) => {
+            // We'll check for error messages (from our server-side form data validation) and if so, alert the user:
+            if ( data.hasOwnProperty("Error") ) {
+              console.log("data.Error:", data.Error);
+              return alert(data.Error);
+            };
+            // If there are no data-validation issues, then we'll reset the form to its default state...
+            $(this)[0].reset();            
+            // ... and simply reload the page upon success in order to reload the data and thus show the new thread on the page.
+            location.reload();
+          }
+        });
+      });  // END of #newThread.submit()
+      
+      
+      // The next form submission we'll handle is the class=deleteForm submissions. Rather than have one function for thread deletion and one for reply deletion, we'll be using
+      // one function and taking advantage of the thread and reply ID attribute values to identify which AJAX request to submit:
+      $("#boardDisplay").on("submit",".deleteForm", function(e) {
+        // We'll first stop the default form submission (which would include reloading the page):
+        e.preventDefault();
+        
+        // Our next action is to determine if the deleteForm submission is for a thread or a reply, as we'll need different URL endpoints for each action. We'll know which URL
+        // to build by looking for the strings "reply" and "thread" in the ID attribute of the submitted deleteForm (e.g. "deletethread{ObjectId}" or "deletereply{ObjectId} ):
+        let url;        
+        if ( e.target.id.indexOf("reply") >= 0 ) {
+          // The deleteForm has "reply" in its ID, so the submitted deleteForm is for deleting a reply, for which the endpoint URL is:
+          url = "/api/replies/" + encodeURIComponent(currentBoard);
+        }
+        else if ( e.target.id.indexOf("thread") >= 0 ) {
+          // The deleteForm has "thread" in its ID, so the submitted deleteForm is for deleting a thread, for which the endpoint URL is:
+          url = "/api/threads/" + encodeURIComponent(currentBoard);
+        };
+        
+        // With our appropriate URL endpoint in hand, we can now carry out our AJAX DELETE action:
+        $.ajax({
+          type: "DELETE",
+          url: url,
+          data: $(this).serialize(),
+          success: (data) => {
+            // We'll first alert the user in case of server-side data validation errors:
+            if ( data.hasOwnProperty("Error") ) {
+              return alert(data.Error);
+            }
+            
+            // If there are no form-data validation errors, then we'll confirm the success (or failure) of the delete attempt:
+            alert(data);
+            // We'll only reset the form to its default state and reload the page if the delete attempt was successful, otherwise these actions would be a bit annoying to 
+            // the user who will likely be trying to correct a typo in their form before trying to submit it again:
+            if (data.indexOf("successfully deleted") >= 0) {
+              $(this)[0].reset();
+              location.reload();
+            };
+            
+          }
+        });  // END of AJAX DELETE
+      });  // END of .deleteForm submission
+      
+      
+      // And then all that's left to do is handle the newReply form submission:
+      $("#boardDisplay").on("submit", "#newReply", function(e) {
+        // Again, we'll prevent the default form submission behaviour (which include reloading the page)...
+        e.preventDefault();
+        // ... and then use AJAX to submit our POST request. Upon success, we'll simply reload the page so that the new reply's content is loaded onto the page:
+        $.ajax({
+          type: "POST",
+          url: "/api/replies/" + encodeURIComponent(currentBoard),
+          data: $(this).serialize(),
+          success: (data) => {
+            // Let's handle any server-side validation errors first:
+            if ( data.hasOwnProperty("Error") ) {
+              return alert(data.Error);
+            };
+            // Otherwise, if there are no server-side validation errors, we'll reset the form to its default state and reload the page so that the thread data (including
+            // the new reply) can be updated:
+            $(this)[0].reset();
+            location.reload()
+          }
+        });
+      });  // END of #newReply form submission
+      
+      
+      
+    });  // END of the main function() of our script
+  </script>
+  
+</body>
+
+</html>

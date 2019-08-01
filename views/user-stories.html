@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>User Stories</title>
+	<meta name="description" content="A project for freeCodeCamp's Information Security and Quality Assurance certification">
+	<link id="favicon" rel="icon" type="image/x-icon" href="https://cdn.glitch.com/054d6fec-0cd3-4178-adb4-a9494acddb2f%2Ffavicon.jpg?1556542126282">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="/public/style.css">
+	<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto">
+  
+  <!-- We'll be using jQuery to handle our form submissions, dynamic content updates, and our nav menu behaviours, so let's make sure it's available to our page (in
+  HTTPS because our whole site is HTTPS). We can get the SRI Hash from https://www.srihash.org to help ensure that the third-party hosted resource hasn't been tampered with. -->
+    <script src="https://code.jquery.com/jquery-3.4.0.min.js"
+    integrity="sha384-JUMjoW8OzDJw4oFpWIB2Bu/c6768ObEthBMVSiIx4ruBIEdyNSUQAjJNFqT5pnJ6"
+    crossorigin="anonymous">
+  </script>
+  
+</head>
+
+<body>
+  
+  <div class="bezel">
+    
+    <div class="container">
+      
+      <div class="nav">
+        
+        <div class="statusBar">
+          <img src="https://cdn.glitch.com/054d6fec-0cd3-4178-adb4-a9494acddb2f%2Ficons8-wi-fi-filled-50.png?1558017937306" alt="WiFi signal symbol">
+          <img src="https://cdn.glitch.com/054d6fec-0cd3-4178-adb4-a9494acddb2f%2Ficons8-signal-filled-50.png?1558018005620" alt="Phone signal strength symbol">
+          <span>27%</span>
+          <img src="https://cdn.glitch.com/054d6fec-0cd3-4178-adb4-a9494acddb2f%2Ficons8-battery-level-filled-50.png?1558017813618" alt="battery symbol">
+          <span id="clock"></span>
+        </div>
+        
+        <div class="top-nav">
+          <h1>User Stories</h1>
+          
+          <div id="burger">
+            <span class="burger-line"></span>
+            <span class="burger-line"></span>
+            <span class="burger-line"></span>
+          </div>
+          
+        </div>
+        
+        <ul id="menu">
+          <a class="menu-item" href="/"><li>Home</li></a>
+          <a class="menu-item" href="/user-stories"><li>User Stories</li></a>
+          <a class="menu-item" href="/api-testing-forms"><li>API-Testing Forms</li></a>
+          <a class="menu-item" href="/project-details"><li>Project Details</li></a>
+        </ul>
+
+      </div>
+      
+      
+      <p>
+        The finished project must satisfy a number of user stories, which have been copied-pasted here from freeCodeCamp's <a href="https://github.com/freeCodeCamp/boilerplate-project-messageboard/blob/gomix/views/index.html" 
+        title="See the user stories in the original index.html file" target="_blank">
+        boilerplate index file</a>
+        for ease of reference:
+      </p>
+
+      <ol>
+        <li>Only allow your site to be loading in an iFrame on your own pages.</li>
+        <li>Do not allow DNS prefetching.</li>
+        <li>Only allow your site to send the referrer for your own pages.</li>
+        <li>I can <b>POST</b> a thread to a specific message board by passing form data <code>text</code> and <code>delete_password</code> to <i>/api/threads/{board}</i>.(Recomend res.redirect to board page /b/{board})
+          Saved will be <code>_id</code>, <code>text</code>, <code>created_on</code>(date&amp;time), <code>bumped_on</code>(date&amp;time, starts same as created_on), <code>reported</code>(boolean), <code>delete_password</code>, &amp; <code>replies</code>(array).</li>
+          <li>I can <b>POST</b> a reply to a thead on a specific board by passing form data <code>text</code>, <code>delete_password</code>, &amp; <code>thread_id</code> to <i>/api/replies/{board}</i> and it will also update the bumped_on date to the comments date.(Recomend res.redirect to thread page /b/{board}/{thread_id})
+            In the thread's 'replies' array will be saved <code>_id</code>, <code>text</code>, <code>created_on</code>, <code>delete_password</code>, &amp; <code>reported</code>.</li>
+            <li>I can <b>GET</b> an array of the most recent 10 bumped threads on the board with only the most recent 3 replies from <i>/api/threads/{board}</i>. The <code>reported</code> and <code>delete_passwords</code> fields will not be sent.</li>
+            <li>I can <b>GET</b> an entire thread with all it's replies from <i>/api/replies/{board}?thread_id={thread_id}</i>. Also hiding the same fields.</li>
+            <li>I can delete a thread completely if I send a <b>DELETE</b> request to <i>/api/threads/{board}</i> and pass along the <code>thread_id</code> &amp; <code>delete_password</code>. (Text response will be 'incorrect password' or 'success')</li>
+            <ul>
+              <li><i>[I have decided to make the responses to this HTTP action more thorough and informative.]</i></li>
+            </ul>
+            <li>I can delete a post(just changing the text to '[deleted]') if I send a <b>DELETE</b> request to <i>/api/replies/{board}</i> and pass along the <code>thread_id</code>, <code>reply_id</code>, &amp; <code>delete_password</code>. (Text response will be 'incorrect password' or 'success')</li>
+            <ul>
+              <li><i>[I have decided to make the responses for this user story more thorough and informative.]</i></li>
+            </ul>
+            <li>I can report a thread and change it's reported value to true by sending a <b>PUT</b> request to <i>/api/threads/{board}</i> and pass along the <code>thread_id</code>. (Text response will be 'success')</li>
+            <ul>
+              <li><i>[I have decided to make the responses for this user story more thorough and informative.]</i></li>
+            </ul>
+            <li>I can report a reply and change it's reported value to true by sending a <b>PUT</b> request to <i>/api/replies/{board}</i> and pass along the <code>thread_id</code> &amp; <code>reply_id</code>. (Text response will be 'success')</li>
+            <ul>
+              <li><i>[I have decided to make the responses for this user story more thorough and informative.]</i></li>
+            </ul>
+            <li>Complete functional tests that wholely test routes and pass.</li>
+          </ol>
+
+
+          <table>
+            <tr>
+              <th></th>
+              <th>/api/threads/{board}</th>
+              <th>/api/replies/{board}</th>
+            </tr>
+            <tr>
+              <th>GET</th>
+              <td>list recent threads</td>
+              <td>show all replies on thread</td>
+            </tr>
+            <tr>
+              <th>POST</th>
+              <td>create thread</td>
+              <td>create reply on thread</td>
+            </tr>
+            <tr>
+              <th>PUT</th>
+              <td>report thread</td>
+              <td>report reply on thread</td>
+            </tr>
+            <tr>
+              <th>DELETE</th>
+              <td>delete thread with password</td>
+              <td>change reply to "{deleted}" on thread</td>
+            </tr>
+          </table>
+
+
+    </div> <!-- END of DIV class="container" -->
+  
+  </div>  <!-- END of DIV class=bezel -->
+    
+    
+    
+  <script>
+    // We'll need our menu functions:
+    $(function() {
+      // Whenever the hamburger button is clicked, we want our menu to slide out:
+      $("#burger").on("click", function() {
+        $(".burger-line").toggleClass("open-burger");  // To make our burger orange when the menu is open/displayed
+        $("#menu").slideToggle("fast");
+      });
+      
+      // We'll also make the menu list slide up when a menu-item is clicked (and loads a new page) to make the transition between pages appear smoother:
+      $(".menu-item").on("click", function() {
+        $("#menu").slideUp("fast");
+        $(".burger-line").removeClass("open-burger");  // To make our burger white again when the menu is closed
+      });
+      
+      // We'll also want our menu to hide (if it's showing) when we click outside of it:
+      $("body").not("#menu").on("click", function(e) {
+        // We want this action to NOT (!) be affected by clicks on the hamburger or its hamburger-lines:
+        if ( !$("#burger").is(e.target) && !$(".burger-line").is(e.target) ) {
+          $("#menu").slideUp("fast");
+          $(".burger-line").removeClass("open-burger");  // To make our burger white again when the menu is closed
+        };
+      });
+      
+      
+      
+      // We'll write a little clock function to keep the clock in our phone mockup's statusBar up to date:
+      function clockUpdater() {
+        // We'll get the current time...
+        let currentTime = new Date()
+        // ... from which we'll extract the hours and minutes, making sure to have a leading 0 if either is less than 10 "units"...
+        let hours = currentTime.getHours();
+        if (hours < 10) hours = "0" + hours;
+        let minutes = currentTime.getMinutes();
+        if (minutes < 10) minutes = "0" + minutes;
+        // ... and with the hours and minutes in hand, the function will update the #clock element on the page:
+        $("#clock").text( hours + "h" + minutes );
+      };  // END of clockUpdater()
+      
+      
+      // We'll run the clock updater once on page load (i.e. when the browser gets down to this line of code) to make sure that the clock is loaded ASAP...
+      clockUpdater();
+      
+      // ... and then we'll have the clock updater function run once every minute to keep the clock updated:
+      setInterval( function() {
+        clockUpdater();
+      }, 60000 );
+      
+      
+    });  //END of the main script function
+  </script>
+  
+
+</body>
+
+</html>
